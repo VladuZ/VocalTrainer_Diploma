@@ -84,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
 
                 updateNoteText(currentPitch, nextPitch, sungPitch);
 
+                // додай візуалізацію співаної ноти
+                noteAnimator.setSungPitch(sungPitch);
+
                 handler.postDelayed(this, 100);
             }
         }, 100);

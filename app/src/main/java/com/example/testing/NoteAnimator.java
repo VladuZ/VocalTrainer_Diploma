@@ -25,8 +25,8 @@ public class NoteAnimator extends View {
     private List<Key> pianoKeys = new ArrayList<>();
 
     private int currentPitchIndex = -1;
+    private int sungPitch = -1;
 
-    // 🎨 Унікальні кольори для кожної з 12 нот
     private static final int[] NOTE_COLORS = {
             Color.RED, Color.MAGENTA, Color.rgb(255,165,0), Color.rgb(255,105,180),
             Color.YELLOW, Color.GREEN, Color.rgb(0,128,128), Color.BLUE,
@@ -115,16 +115,32 @@ public class NoteAnimator extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         for (Note note : notes) {
             Paint paint = new Paint();
             paint.setColor(note.color);
             paint.setStyle(Paint.Style.FILL);
             canvas.drawRect(note.x, note.y, note.x + note.width, note.y + note.height, paint);
         }
+
+        // 🎤 Візуалізація співаної ноти
+        if (sungPitch != -1 && sungPitch < pianoKeys.size()) {
+            Key key = pianoKeys.get(sungPitch);
+            int y = (int) key.y;
+            int height = (int) key.height;
+            Paint sungPaint = new Paint();
+            sungPaint.setColor(Color.argb(150, 0, 255, 0)); // прозоро-зелений
+            sungPaint.setStyle(Paint.Style.FILL);
+            canvas.drawRect(0, y, getWidth(), y + height, sungPaint);
+        }
     }
 
     public int getCurrentPitchIndex() {
         return currentPitchIndex;
+    }
+
+    public void setSungPitch(int pitchIndex) {
+        this.sungPitch = pitchIndex;
     }
 
     private static class Note {
