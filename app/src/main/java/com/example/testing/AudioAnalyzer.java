@@ -13,7 +13,7 @@ import androidx.core.app.ActivityCompat;
 public class AudioAnalyzer {
     private static final int SAMPLE_RATE = 8000;
     private static final int BUFFER_SIZE = 2048;
-    private static final int NUM_PITCHES = 36;
+    private static final int NUM_PITCHES = 60; // Updated to 60 pitches (5 octaves * 12 notes)
 
     private AudioRecord audioRecord;
     private Thread recordingThread;
@@ -88,7 +88,7 @@ public class AudioAnalyzer {
         if (freq < 50 || freq > 2000) return -1;
 
         double baseFreq = 261.63; // C4
-        int index = (int) Math.round(12 * Math.log(freq / baseFreq) / Math.log(2)) + 24;
+        int index = (int) Math.round(12 * Math.log(freq / baseFreq) / Math.log(2)) + 36; // Updated to start from octave 1
         return (index >= 0 && index < NUM_PITCHES) ? index : -1;
     }
 }

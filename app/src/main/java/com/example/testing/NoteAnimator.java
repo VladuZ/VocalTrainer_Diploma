@@ -21,7 +21,7 @@ public class NoteAnimator extends View {
     public static final int REFRESH_RATE = 16;
     public static final int NOTE_SPEED = 5;
 
-    private static final int NUM_PITCHES = 36;
+    private static final int NUM_PITCHES = 60; // Updated to 60 pitches (5 octaves * 12 notes)
     private List<Key> pianoKeys = new ArrayList<>();
 
     private int currentPitchIndex = -1;
@@ -123,7 +123,7 @@ public class NoteAnimator extends View {
             canvas.drawRect(note.x, note.y, note.x + note.width, note.y + note.height, paint);
         }
 
-        // 🎤 Візуалізація співаної ноти
+        // Візуалізація співаної ноти
         if (sungPitch != -1 && sungPitch < pianoKeys.size()) {
             Key key = pianoKeys.get(sungPitch);
             int y = (int) key.y;

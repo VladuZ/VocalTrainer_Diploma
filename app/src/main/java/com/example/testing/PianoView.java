@@ -16,7 +16,7 @@ public class PianoView extends View {
     private Paint textOnBlackPaint;
     private Paint dividerPaint;
 
-    private final int numWhiteKeys = 21;
+    private final int numWhiteKeys = 35; // Updated to 35 white keys (5 octaves)
     private final int[] blackKeyPattern = {1, 1, 0, 1, 1, 1, 0};
     private final String[] NOTE_NAMES = {
             "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
@@ -79,7 +79,7 @@ public class PianoView extends View {
                 pitchIndex++;
             }
 
-            String noteName = NOTE_NAMES[pitchIndex % 12] + (pitchIndex / 12);
+            String noteName = NOTE_NAMES[pitchIndex % 12] + ((pitchIndex / 12) + 1); // Updated to start from octave 1
             canvas.drawRect(0, top, keyWidth, top + keyHeight, whitePaint);
             canvas.drawRect(0, top, keyWidth, top + keyHeight, borderPaint);
 
@@ -94,7 +94,7 @@ public class PianoView extends View {
         }
 
         // Малюємо чорні клавіші з підписами
-        int octaveCount = 3;
+        int octaveCount = 5;
         int whiteKeyIndex = 0;
         int blackNoteCounter = 0;
 
@@ -113,7 +113,7 @@ public class PianoView extends View {
 
                     // Підпис чорної клавіші
                     int currentPitch = getBlackPitchIndex(blackNoteCounter);
-                    String noteName = NOTE_NAMES[currentPitch % 12] + (currentPitch / 12);
+                    String noteName = NOTE_NAMES[currentPitch % 12] + ((currentPitch / 12) + 1); // Updated to start from octave 1
                     canvas.drawText(noteName, left + 10, top + blackKeyHeight / 2 + 8, textOnBlackPaint);
 
                     blackNoteCounter++;
@@ -130,7 +130,7 @@ public class PianoView extends View {
 
     private int getBlackPitchIndex(int blackNoteCounter) {
         int count = 0;
-        for (int i = 0; i < 36; i++) {
+        for (int i = 0; i < 60; i++) { // Updated to 60 pitches (5 octaves * 12 notes)
             if (isBlackKey(i)) {
                 if (count == blackNoteCounter) {
                     return i;

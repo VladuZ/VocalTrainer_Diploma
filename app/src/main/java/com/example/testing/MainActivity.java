@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         audioAnalyzer = new AudioAnalyzer(this);
 
         for (int i = 0; i < 20; i++) {
-            int pitchIndex = random.nextInt(36);
+            int pitchIndex = random.nextInt(60); // Updated to 60 pitches (5 octaves * 12 notes)
             noteList.add(pitchIndex);
         }
 
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
                 updateNoteText(currentPitch, nextPitch, sungPitch);
 
-                // додай візуалізацію співаної ноти
+                // Візуалізація співаної ноти
                 noteAnimator.setSungPitch(sungPitch);
 
                 handler.postDelayed(this, 100);
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String getNoteName(int pitchIndex) {
         if (pitchIndex == -1) return "—";
-        int octave = pitchIndex / 12;
+        int octave = (pitchIndex / 12) + 1; // Updated to start from octave 1
         int note = pitchIndex % 12;
         return NOTE_NAMES[note] + octave;
     }
