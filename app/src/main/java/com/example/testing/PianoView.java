@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
+import java.util.List;
 
 public class PianoView extends View {
 
@@ -15,17 +16,14 @@ public class PianoView extends View {
     private Paint textPaint;
     private Paint textOnBlackPaint;
     private Paint dividerPaint;
+    private Paint notePaint;
+    private List<Note> notesList;
 
-    private final int numWhiteKeys = 35; // Updated to 35 white keys (5 octaves)
+    private final int numWhiteKeys = 35; // 5 octaves
     private final int[] blackKeyPattern = {1, 1, 0, 1, 1, 1, 0};
     private final String[] NOTE_NAMES = {
             "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
     };
-
-    public PianoView(Context context) {
-        super(context);
-        init();
-    }
 
     public PianoView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -59,19 +57,31 @@ public class PianoView extends View {
         dividerPaint = new Paint();
         dividerPaint.setColor(Color.LTGRAY);
         dividerPaint.setStrokeWidth(4);
+
+        notePaint = new Paint();
+        notePaint.setColor(Color.RED);
+        notePaint.setStyle(Paint.Style.FILL);
+    }
+
+    public void setNotes(List<Note> notesList) {
+        this.notesList = notesList;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        drawPiano(canvas);
+        drawNotes(canvas);
+    }
 
+    private void drawPiano(Canvas canvas) {
         float keyHeight = (float) getHeight() / numWhiteKeys;
         float keyWidth = getWidth();
 
         int pitchIndex = 0;
         int whiteKeyCount = 0;
 
-        // Малюємо білі клавіші з підписами
+        // Draw white keys with labels
         for (int i = 0; i < numWhiteKeys; i++) {
             float top = i * keyHeight;
 
@@ -79,10 +89,9 @@ public class PianoView extends View {
                 pitchIndex++;
             }
 
-            String noteName = NOTE_NAMES[pitchIndex % 12] + ((pitchIndex / 12) + 1); // Updated to start from octave 1
+            String noteName = NOTE_NAMES[pitchIndex % 12] + ((pitchIndex / 12) + 1);
             canvas.drawRect(0, top, keyWidth, top + keyHeight, whitePaint);
             canvas.drawRect(0, top, keyWidth, top + keyHeight, borderPaint);
-
             canvas.drawText(noteName, 20, top + keyHeight * 0.6f, textPaint);
 
             whiteKeyCount++;
@@ -93,7 +102,7 @@ public class PianoView extends View {
             }
         }
 
-        // Малюємо чорні клавіші з підписами
+        // Draw black keys with labels
         int octaveCount = 5;
         int whiteKeyIndex = 0;
         int blackNoteCounter = 0;
@@ -111,15 +120,27 @@ public class PianoView extends View {
 
                     canvas.drawRect(left, top, left + blackKeyWidth, top + blackKeyHeight, blackPaint);
 
-                    // Підпис чорної клавіші
+                    // Label for black key
                     int currentPitch = getBlackPitchIndex(blackNoteCounter);
-                    String noteName = NOTE_NAMES[currentPitch % 12] + ((currentPitch / 12) + 1); // Updated to start from octave 1
+                    String noteName = NOTE_NAMES[currentPitch % 12] + ((currentPitch / 12) + 1);
                     canvas.drawText(noteName, left + 10, top + blackKeyHeight / 2 + 8, textOnBlackPaint);
 
                     blackNoteCounter++;
                 }
             }
             whiteKeyIndex += 7;
+        }
+    }
+
+    private void drawNotes(Canvas canvas) {
+        if (notesList != null) {
+            float keyHeight = (float) getHeight() / numWhiteKeys;
+            for (Note note : notesList) {
+                int position = note.getPosition();
+                int length = note.getLength();
+                float top = position * keyHeight;
+                canvas.drawRect(0, top, getWidth(), top + length * keyHeight, notePaint);
+            }
         }
     }
 
@@ -130,7 +151,7 @@ public class PianoView extends View {
 
     private int getBlackPitchIndex(int blackNoteCounter) {
         int count = 0;
-        for (int i = 0; i < 60; i++) { // Updated to 60 pitches (5 octaves * 12 notes)
+        for (int i = 0; i < 60; i++) {
             if (isBlackKey(i)) {
                 if (count == blackNoteCounter) {
                     return i;
