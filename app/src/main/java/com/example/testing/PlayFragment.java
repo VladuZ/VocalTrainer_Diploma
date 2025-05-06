@@ -6,15 +6,13 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlayFragment extends Fragment {
 
-    private PianoView pianoView;
     private NoteAnimator noteAnimator;
-    private List<Note> notesList;
+    private List<Note> notesList = new ArrayList<>();
     private Handler handler = new Handler();
 
     @Override
@@ -22,36 +20,59 @@ public class PlayFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_play, container, false);
 
-        pianoView = view.findViewById(R.id.pianoView);
         noteAnimator = view.findViewById(R.id.noteAnimator);
 
-        // Retrieve the list of notes passed from ExerciseEditorFragment
+        // Retrieve notes data from arguments
         if (getArguments() != null) {
             notesList = (List<Note>) getArguments().getSerializable("notesList");
             playNotes();
         }
-
-        Button backButton = view.findViewById(R.id.backButton);
-        backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         return view;
     }
 
     private void playNotes() {
         int currentDelay = 0;
+
         for (Note note : notesList) {
-            int pitchIndex = note.getPosition(); // Assuming position corresponds to pitchIndex
+            int pitchIndex = convertNoteToPitchIndex(note.getContent());
             int length = note.getLength();
+            int position = note.getPosition();
+
             int duration = calculateNoteDuration(length);
 
-            handler.postDelayed(() -> noteAnimator.addNote(pitchIndex, length), currentDelay);
+            handler.postDelayed(() -> noteAnimator.addNote(pitchIndex, length), currentDelay + position * 1000);
             currentDelay += duration;
         }
     }
 
-    private int calculateNoteDuration(int lengthPx) {
+    private int convertNoteToPitchIndex(String note) {
+        // Convert note string (e.g., "C1", "D#3") to pitch index
+        int octave = Character.getNumericValue(note.charAt(note.length() - 1));
+        String noteName = note.substring(0, note.length() - 1);
+
+        int basePitch = 0;
+        switch (noteName) {
+            case "C": basePitch = 0; break;
+            case "C#": basePitch = 1; break;
+            case "D": basePitch = 2; break;
+            case "D#": basePitch = 3; break;
+            case "E": basePitch = 4; break;
+            case "F": basePitch = 5; break;
+            case "F#": basePitch = 6; break;
+            case "G": basePitch = 7; break;
+            case "G#": basePitch = 8; break;
+            case "A": basePitch = 9; break;
+            case "A#": basePitch = 10; break;
+            case "B": basePitch = 11; break;
+        }
+
+        return basePitch + (octave - 1) * 12;
+    }
+
+    private int calculateNoteDuration(int length) {
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        int distance = screenWidth + lengthPx;
+        int distance = screenWidth + length;
         int frames = distance / NoteAnimator.NOTE_SPEED;
         return frames * NoteAnimator.REFRESH_RATE;
     }

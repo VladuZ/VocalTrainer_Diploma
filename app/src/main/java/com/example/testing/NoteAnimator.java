@@ -129,7 +129,7 @@ public class NoteAnimator extends View {
             int y = (int) key.y;
             int height = (int) key.height;
             Paint sungPaint = new Paint();
-            sungPaint.setColor(Color.argb(150, 0, 255, 0)); // прозоро-зелений
+            sungPaint.setColor(Color.argb(100, 0, 255, 0)); // прозоро-зелений
             sungPaint.setStyle(Paint.Style.FILL);
             canvas.drawRect(0, y, getWidth(), y + height, sungPaint);
         }

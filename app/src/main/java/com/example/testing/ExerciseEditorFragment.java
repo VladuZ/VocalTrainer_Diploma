@@ -50,7 +50,7 @@ public class ExerciseEditorFragment extends Fragment {
         notesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         addNoteButton.setOnClickListener(v -> addNote());
-        playButton.setOnClickListener(v -> openPlayFragment());
+        playButton.setOnClickListener(v -> openPianoPlayFragment());
         saveButton.setOnClickListener(v -> saveNotes());
 
         Button backButton = view.findViewById(R.id.backButton);
@@ -103,19 +103,19 @@ public class ExerciseEditorFragment extends Fragment {
         noteLengthInput.setText("");
     }
 
-    private void openPlayFragment() {
+    private void openPianoPlayFragment() {
         if (!notesList.isEmpty()) {
-            Fragment playFragment = new PlayFragment();
+            Fragment pianoPlayFragment = new PlayFragment();
             Bundle args = new Bundle();
             args.putSerializable("notesList", (ArrayList<Note>) notesList);
-            playFragment.setArguments(args);
+            pianoPlayFragment.setArguments(args);
 
             getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentContainer, playFragment)
+                    .replace(R.id.fragmentContainer, pianoPlayFragment)
                     .addToBackStack(null)
                     .commit();
         } else {
-            Toast.makeText(getContext(), "No notes to play.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please add notes before playing.", Toast.LENGTH_SHORT).show();
         }
     }
 
