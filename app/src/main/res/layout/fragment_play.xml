@@ -23,7 +23,7 @@
         app:layout_constraintTop_toBottomOf="@id/backButton"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintHeight_percent="0.5" />
+        app:layout_constraintHeight_percent="0.8" />
 
     <!-- NoteAnimator -->
     <com.example.testing.NoteAnimator
@@ -34,6 +34,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/pianoView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.5" />
+        app:layout_constraintHeight_percent="0.8" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

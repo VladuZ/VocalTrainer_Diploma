@@ -10,18 +10,18 @@ import java.util.List;
 
 public class PianoView extends View {
 
-    private Paint whitePaint;
-    private Paint blackPaint;
-    private Paint borderPaint;
-    private Paint textPaint;
-    private Paint textOnBlackPaint;
-    private Paint dividerPaint;
-    private Paint notePaint;
-    private List<Note> notesList;
+    protected Paint whitePaint;
+    protected Paint blackPaint;
+    protected Paint borderPaint;
+    protected Paint textPaint;
+    protected Paint textOnBlackPaint;
+    protected Paint dividerPaint;
+    protected Paint notePaint;
+    protected List<Note> notesList;
 
     private final int numWhiteKeys = 35; // 5 octaves
     private final int[] blackKeyPattern = {1, 1, 0, 1, 1, 1, 0};
-    private final String[] NOTE_NAMES = {
+    protected final String[] NOTE_NAMES = {
             "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
     };
 
@@ -30,7 +30,7 @@ public class PianoView extends View {
         init();
     }
 
-    private void init() {
+    protected void init() {
         whitePaint = new Paint();
         whitePaint.setColor(Color.WHITE);
         whitePaint.setStyle(Paint.Style.FILL);
@@ -46,12 +46,12 @@ public class PianoView extends View {
 
         textPaint = new Paint();
         textPaint.setColor(Color.DKGRAY);
-        textPaint.setTextSize(32);
+        textPaint.setTextSize(22);
         textPaint.setAntiAlias(true);
 
         textOnBlackPaint = new Paint();
         textOnBlackPaint.setColor(Color.WHITE);
-        textOnBlackPaint.setTextSize(26);
+        textOnBlackPaint.setTextSize(22);
         textOnBlackPaint.setAntiAlias(true);
 
         dividerPaint = new Paint();
@@ -63,7 +63,7 @@ public class PianoView extends View {
         notePaint.setStyle(Paint.Style.FILL);
     }
 
-    public void setNotes(List<Note> notesList) {
+    protected void setNotes(List<Note> notesList) {
         this.notesList = notesList;
     }
 
@@ -74,7 +74,7 @@ public class PianoView extends View {
         drawNotes(canvas);
     }
 
-    private void drawPiano(Canvas canvas) {
+    protected void drawPiano(Canvas canvas) {
         float keyHeight = (float) getHeight() / numWhiteKeys;
         float keyWidth = getWidth();
 
@@ -116,7 +116,7 @@ public class PianoView extends View {
                     float top = (blackKeyIndex + 1) * keyHeight - keyHeight * 0.3f;
                     float blackKeyHeight = keyHeight * 0.6f;
                     float blackKeyWidth = keyWidth * 0.6f;
-                    float left = (keyWidth - blackKeyWidth) / 2;
+                    float left = (keyWidth - blackKeyWidth) / 1.1f;
 
                     canvas.drawRect(left, top, left + blackKeyWidth, top + blackKeyHeight, blackPaint);
 
@@ -144,7 +144,7 @@ public class PianoView extends View {
         }
     }
 
-    private boolean isBlackKey(int pitchIndex) {
+    protected boolean isBlackKey(int pitchIndex) {
         int note = pitchIndex % 12;
         return note == 1 || note == 3 || note == 6 || note == 8 || note == 10;
     }
