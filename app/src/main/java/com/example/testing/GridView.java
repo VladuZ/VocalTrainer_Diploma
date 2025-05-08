@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -138,7 +140,7 @@ public class GridView extends View {
         return selectedCells.contains(new Cell(row, col));
     }
 
-    private void ensureExtraColumns() {
+    public void ensureExtraColumns() {
         if (!selectedCells.isEmpty()) {
             int maxSelectedColumn = 0;
             for (Cell cell : selectedCells) {
@@ -153,7 +155,7 @@ public class GridView extends View {
         }
     }
 
-    public static class Cell {
+    public static class Cell implements Serializable {
         int row;
         int col;
 
@@ -184,4 +186,11 @@ public class GridView extends View {
     public List<Cell> getSelectedCells() {
         return selectedCells;
     }
+
+    public void setSelectedCells(List<Cell> cells) {
+        selectedCells.clear();
+        selectedCells.addAll(cells);
+        invalidate(); // Refresh the view to reflect the changes
+    }
+
 }

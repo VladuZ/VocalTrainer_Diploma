@@ -35,7 +35,7 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
         holder.exerciseBPMTextView.setText(String.format("BPM: %d", exercise.getBpm()));
 
         holder.itemView.setOnClickListener(v -> {
-            ExerciseDialogFragment dialogFragment = ExerciseDialogFragment.newInstance(exercise.getName(), exercise.getBpm(), listener);
+            ExerciseDialogFragment dialogFragment = ExerciseDialogFragment.newInstance(exercise.getName(), exercise.getBpm(), exercise.getCells(), listener);
             dialogFragment.show(fragmentManager, "ExerciseDialogFragment");
         });
     }

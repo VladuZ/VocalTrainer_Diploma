@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.util.List;
+
 public class ExerciseEditorFragment extends Fragment {
     GridView gridView;
     @Override
@@ -17,6 +19,15 @@ public class ExerciseEditorFragment extends Fragment {
 
         gridView = view.findViewById(R.id.GridView);
 
+        // Retrieve the selected cells from the arguments
+        Bundle args = getArguments();
+        if (args != null) {
+            List<GridView.Cell> selectedCells = (List<GridView.Cell>) args.getSerializable("selectedCells");
+            if (selectedCells != null) {
+                gridView.setSelectedCells(selectedCells);
+                gridView.ensureExtraColumns();
+            }
+        }
 
         Button backButton = view.findViewById(R.id.backButton);
         backButton.setOnClickListener(v -> getParentFragmentManager().popBackStack());

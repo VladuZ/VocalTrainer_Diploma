@@ -11,22 +11,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExerciseDialogFragment extends DialogFragment {
 
     private static final String ARG_EXERCISE_NAME = "exerciseName";
     private static final String ARG_EXERCISE_BPM = "exerciseBpm";
+    private static final String ARG_EXERCISE_CELLS = "exerciseCells";
 
     private String exerciseName;
     private int exerciseBpm;
+    private List<GridView.Cell> exerciseCells;
     private OnExerciseDeletedListener listener;
 
-    public static ExerciseDialogFragment newInstance(String name, int bpm, OnExerciseDeletedListener listener) {
+    public static ExerciseDialogFragment newInstance(String name, int bpm, List<GridView.Cell> cells, OnExerciseDeletedListener listener) {
         ExerciseDialogFragment fragment = new ExerciseDialogFragment();
         Bundle args = new Bundle();
         args.putString(ARG_EXERCISE_NAME, name);
         args.putInt(ARG_EXERCISE_BPM, bpm);
+        args.putSerializable(ARG_EXERCISE_CELLS, new ArrayList<>(cells));
         fragment.setArguments(args);
         fragment.setListener(listener);
         return fragment;
@@ -42,6 +49,7 @@ public class ExerciseDialogFragment extends DialogFragment {
         if (getArguments() != null) {
             exerciseName = getArguments().getString(ARG_EXERCISE_NAME);
             exerciseBpm = getArguments().getInt(ARG_EXERCISE_BPM);
+            exerciseCells = (List<GridView.Cell>) getArguments().getSerializable(ARG_EXERCISE_CELLS);
         }
     }
 
@@ -57,18 +65,43 @@ public class ExerciseDialogFragment extends DialogFragment {
         Button playButton = view.findViewById(R.id.playButton);
         Button editButton = view.findViewById(R.id.editButton);
         Button deleteButton = view.findViewById(R.id.deleteButton);
-        Button backButton = view.findViewById(R.id.backButton);
 
         exerciseNameTextView.setText(exerciseName);
         exerciseBPMTextView.setText(String.format("BPM: %d", exerciseBpm));
 
         playButton.setOnClickListener(v -> {
             // Handle play button click
+            PlayFragment playFragment = new PlayFragment();
+
+            // Pass the selected cells to the editor fragment
+            Bundle args = new Bundle();
+            args.putSerializable("selectedCells", new ArrayList<>(exerciseCells));
+            playFragment.setArguments(args);
+
+            // Replace the current fragment with the editor fragment
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer, playFragment)
+                    .addToBackStack(null)
+                    .commit();
+
             dismiss();
         });
 
         editButton.setOnClickListener(v -> {
-            // Handle edit button click
+            // Create a new instance of ExerciseEditorFragment
+            ExerciseEditorFragment editorFragment = new ExerciseEditorFragment();
+
+            // Pass the selected cells to the editor fragment
+            Bundle args = new Bundle();
+            args.putSerializable("selectedCells", new ArrayList<>(exerciseCells));
+            editorFragment.setArguments(args);
+
+            // Replace the current fragment with the editor fragment
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentContainer, editorFragment)
+                    .addToBackStack(null)
+                    .commit();
+
             dismiss();
         });
 
@@ -78,11 +111,6 @@ public class ExerciseDialogFragment extends DialogFragment {
             if (listener != null) {
                 listener.onExerciseDeleted();
             }
-            dismiss();
-        });
-
-        backButton.setOnClickListener(v -> {
-            // Handle back button click
             dismiss();
         });
 
@@ -97,9 +125,9 @@ public class ExerciseDialogFragment extends DialogFragment {
             if (file.exists()) {
                 boolean deleted = file.delete();
                 if (deleted) {
-                    // Optionally, show a toast or message indicating successful deletion
+                    Toast.makeText(context, "Exercise succesfully deleted", Toast.LENGTH_LONG).show();
                 } else {
-                    // Optionally, show a toast or message indicating deletion failure
+                    Toast.makeText(context, "Failed to delete exercise", Toast.LENGTH_LONG).show();
                 }
             }
         }

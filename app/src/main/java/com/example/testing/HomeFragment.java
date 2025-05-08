@@ -13,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +41,7 @@ public class HomeFragment extends Fragment implements OnExerciseDeletedListener 
         });
 
         settingsButton.setOnClickListener(v -> {
-            Fragment settingsFragment = new SettingsFragment();
+            Fragment settingsFragment = new AccountFragment();
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainer, settingsFragment)
                     .addToBackStack(null)
@@ -74,8 +75,17 @@ public class HomeFragment extends Fragment implements OnExerciseDeletedListener 
 
                     String exerciseName = jsonObject.getString("exerciseName");
                     int bpm = jsonObject.getInt("bpm");
+                    JSONArray notesArray = jsonObject.getJSONArray("notes");
 
-                    exercises.add(new Exercise(exerciseName, bpm));
+                    List<GridView.Cell> cells = new ArrayList<>();
+                    for (int i = 0; i < notesArray.length(); i++) {
+                        JSONObject note = notesArray.getJSONObject(i);
+                        int row = note.getInt("row");
+                        int col = note.getInt("column");
+                        cells.add(new GridView.Cell(row, col));
+                    }
+
+                    exercises.add(new Exercise(exerciseName, bpm, cells));
                 } catch (IOException | JSONException e) {
                     e.printStackTrace();
                 }
