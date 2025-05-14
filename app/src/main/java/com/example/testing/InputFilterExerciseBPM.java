@@ -3,7 +3,7 @@ package com.example.testing;
 import android.text.InputFilter;
 import android.text.Spanned;
 
-public class ExerciseBPMInputFilter implements InputFilter {
+public class InputFilterExerciseBPM implements InputFilter {
 
     @Override
     public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {

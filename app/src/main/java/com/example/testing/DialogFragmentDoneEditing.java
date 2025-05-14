@@ -18,14 +18,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 
-public class DoneEditingDialogFragment extends DialogFragment {
+public class DialogFragmentDoneEditing extends DialogFragment {
 
     private EditText exerciseNameEditText;
     private EditText exerciseBPMEditText;
     private Button buttonOk;
-    private List<GridView.Cell> selectedCells;
+    private List<ViewGrid.Cell> selectedCells;
 
-    public DoneEditingDialogFragment(List<GridView.Cell> selectedCells) {
+    public DialogFragmentDoneEditing(List<ViewGrid.Cell> selectedCells) {
         super();
         this.selectedCells = selectedCells;
     }
@@ -38,8 +38,8 @@ public class DoneEditingDialogFragment extends DialogFragment {
         exerciseBPMEditText = view.findViewById(R.id.bpmText);
         buttonOk = view.findViewById(R.id.buttonOk);
 
-        exerciseNameEditText.setFilters(new InputFilter[]{new ExerciseNameInputFilter()});
-        exerciseBPMEditText.setFilters(new InputFilter[]{new ExerciseBPMInputFilter()});
+        exerciseNameEditText.setFilters(new InputFilter[]{new InputFilterExerciseName()});
+        exerciseBPMEditText.setFilters(new InputFilter[]{new InputFilterExerciseBPM()});
 
         buttonOk.setOnClickListener(v -> {
             Context context = getActivity();
@@ -63,6 +63,11 @@ public class DoneEditingDialogFragment extends DialogFragment {
                 return;
             }
 
+            if (bpm < 60 || bpm > 300) {
+                Toast.makeText(context, "BPM should be in range from 60 to 300", Toast.LENGTH_LONG).show();
+                return;
+            }
+
             // Save to JSON file
             saveToJsonFile(context, exerciseName, bpm);
         });
@@ -77,7 +82,7 @@ public class DoneEditingDialogFragment extends DialogFragment {
 
             // Create a JSONArray to store cell details
             JSONArray cellsArray = new JSONArray();
-            for (GridView.Cell cell : selectedCells) {
+            for (ViewGrid.Cell cell : selectedCells) {
                 JSONObject cellObject = new JSONObject();
                 cellObject.put("row", cell.row);
                 cellObject.put("column", cell.col);

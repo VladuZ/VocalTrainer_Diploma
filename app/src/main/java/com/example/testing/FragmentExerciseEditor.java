@@ -10,8 +10,8 @@ import android.widget.Button;
 
 import java.util.List;
 
-public class ExerciseEditorFragment extends Fragment {
-    GridView gridView;
+public class FragmentExerciseEditor extends Fragment {
+    ViewGrid gridView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -22,7 +22,7 @@ public class ExerciseEditorFragment extends Fragment {
         // Retrieve the selected cells from the arguments
         Bundle args = getArguments();
         if (args != null) {
-            List<GridView.Cell> selectedCells = (List<GridView.Cell>) args.getSerializable("selectedCells");
+            List<ViewGrid.Cell> selectedCells = (List<ViewGrid.Cell>) args.getSerializable("selectedCells");
             if (selectedCells != null) {
                 gridView.setSelectedCells(selectedCells);
                 gridView.ensureExtraColumns();
@@ -35,7 +35,7 @@ public class ExerciseEditorFragment extends Fragment {
         Button doneButton = view.findViewById(R.id.doneButton);
         doneButton.setOnClickListener(v -> {
             // Show the DialogFragment
-            DoneEditingDialogFragment dialogFragment = new DoneEditingDialogFragment(gridView.getSelectedCells());
+            DialogFragmentDoneEditing dialogFragment = new DialogFragmentDoneEditing(gridView.getSelectedCells());
             dialogFragment.show(getChildFragmentManager(), "dialog_tag");
         });
 

@@ -17,7 +17,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ExerciseDialogFragment extends DialogFragment {
+public class DialogFragmentExercise extends DialogFragment {
 
     private static final String ARG_EXERCISE_NAME = "exerciseName";
     private static final String ARG_EXERCISE_BPM = "exerciseBpm";
@@ -25,11 +25,11 @@ public class ExerciseDialogFragment extends DialogFragment {
 
     private String exerciseName;
     private int exerciseBpm;
-    private List<GridView.Cell> exerciseCells;
+    private List<ViewGrid.Cell> exerciseCells;
     private OnExerciseDeletedListener listener;
 
-    public static ExerciseDialogFragment newInstance(String name, int bpm, List<GridView.Cell> cells, OnExerciseDeletedListener listener) {
-        ExerciseDialogFragment fragment = new ExerciseDialogFragment();
+    public static DialogFragmentExercise newInstance(String name, int bpm, List<ViewGrid.Cell> cells, OnExerciseDeletedListener listener) {
+        DialogFragmentExercise fragment = new DialogFragmentExercise();
         Bundle args = new Bundle();
         args.putString(ARG_EXERCISE_NAME, name);
         args.putInt(ARG_EXERCISE_BPM, bpm);
@@ -49,7 +49,7 @@ public class ExerciseDialogFragment extends DialogFragment {
         if (getArguments() != null) {
             exerciseName = getArguments().getString(ARG_EXERCISE_NAME);
             exerciseBpm = getArguments().getInt(ARG_EXERCISE_BPM);
-            exerciseCells = (List<GridView.Cell>) getArguments().getSerializable(ARG_EXERCISE_CELLS);
+            exerciseCells = (List<ViewGrid.Cell>) getArguments().getSerializable(ARG_EXERCISE_CELLS);
         }
     }
 
@@ -71,11 +71,12 @@ public class ExerciseDialogFragment extends DialogFragment {
 
         playButton.setOnClickListener(v -> {
             // Handle play button click
-            PlayFragment playFragment = new PlayFragment();
+            FragmentPlay playFragment = new FragmentPlay();
 
             // Pass the selected cells to the editor fragment
             Bundle args = new Bundle();
             args.putSerializable("selectedCells", new ArrayList<>(exerciseCells));
+            args.putInt("exerciseBpm", exerciseBpm);
             playFragment.setArguments(args);
 
             // Replace the current fragment with the editor fragment
@@ -89,7 +90,7 @@ public class ExerciseDialogFragment extends DialogFragment {
 
         editButton.setOnClickListener(v -> {
             // Create a new instance of ExerciseEditorFragment
-            ExerciseEditorFragment editorFragment = new ExerciseEditorFragment();
+            FragmentExerciseEditor editorFragment = new FragmentExerciseEditor();
 
             // Pass the selected cells to the editor fragment
             Bundle args = new Bundle();

@@ -18,7 +18,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class HomeFragment extends Fragment implements OnExerciseDeletedListener {
+public class FragmentHome extends Fragment implements OnExerciseDeletedListener {
 
     private ExerciseAdapter adapter;
     private List<Exercise> exercises;
@@ -33,7 +33,7 @@ public class HomeFragment extends Fragment implements OnExerciseDeletedListener 
         RecyclerView exercisesRecyclerView = view.findViewById(R.id.exercisesRecyclerView);
 
         createExerciseButton.setOnClickListener(v -> {
-            Fragment exerciseFragment = new ExerciseEditorFragment();
+            Fragment exerciseFragment = new FragmentExerciseEditor();
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainer, exerciseFragment)
                     .addToBackStack(null)
@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment implements OnExerciseDeletedListener 
         });
 
         settingsButton.setOnClickListener(v -> {
-            Fragment settingsFragment = new AccountFragment();
+            Fragment settingsFragment = new FragmentAccount();
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainer, settingsFragment)
                     .addToBackStack(null)
@@ -77,12 +77,12 @@ public class HomeFragment extends Fragment implements OnExerciseDeletedListener 
                     int bpm = jsonObject.getInt("bpm");
                     JSONArray notesArray = jsonObject.getJSONArray("notes");
 
-                    List<GridView.Cell> cells = new ArrayList<>();
+                    List<ViewGrid.Cell> cells = new ArrayList<>();
                     for (int i = 0; i < notesArray.length(); i++) {
                         JSONObject note = notesArray.getJSONObject(i);
                         int row = note.getInt("row");
                         int col = note.getInt("column");
-                        cells.add(new GridView.Cell(row, col));
+                        cells.add(new ViewGrid.Cell(row, col));
                     }
 
                     exercises.add(new Exercise(exerciseName, bpm, cells));

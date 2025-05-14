@@ -25,7 +25,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.example.testing.EditorPianoView
+    <com.example.testing.ViewEditorPiano
         android:id="@+id/EditorPianoView"
         android:layout_width="50dp"
         android:layout_height="0dp"
@@ -36,7 +36,7 @@
         app:layout_constraintWidth_percent="0.15"/>
 
     <!-- Grid View -->
-    <com.example.testing.GridView
+    <com.example.testing.ViewGrid
         android:id="@+id/GridView"
         android:layout_width="0dp"
         android:layout_height="0dp"

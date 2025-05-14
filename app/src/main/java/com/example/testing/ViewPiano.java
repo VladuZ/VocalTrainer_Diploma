@@ -8,7 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import java.util.List;
 
-public class PianoView extends View {
+public class ViewPiano extends View {
 
     protected Paint whitePaint;
     protected Paint blackPaint;
@@ -25,7 +25,7 @@ public class PianoView extends View {
             "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
     };
 
-    public PianoView(Context context, AttributeSet attrs) {
+    public ViewPiano(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }

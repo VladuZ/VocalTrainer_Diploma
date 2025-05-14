@@ -2,19 +2,14 @@ package com.example.testing;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-import java.util.List;
 
-public class EditorPianoView extends PianoView {
+public class ViewEditorPiano extends ViewPiano {
 
 
     private final int numWhiteKeys = 60; // 5 octaves
 
-    public EditorPianoView(Context context, AttributeSet attrs) {
+    public ViewEditorPiano(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }

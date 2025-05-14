@@ -6,9 +6,9 @@ public class Exercise {
     private String name;
     private int bpm;
 
-    private List<GridView.Cell> cells;
+    private List<ViewGrid.Cell> cells;
 
-    public Exercise(String name, int bpm, List<GridView.Cell> cells) {
+    public Exercise(String name, int bpm, List<ViewGrid.Cell> cells) {
         this.name = name;
         this.bpm = bpm;
         this.cells = cells;
@@ -22,7 +22,7 @@ public class Exercise {
         return bpm;
     }
 
-    public List<GridView.Cell> getCells(){
+    public List<ViewGrid.Cell> getCells(){
         return cells;
     }
 }

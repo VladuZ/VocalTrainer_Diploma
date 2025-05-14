@@ -10,13 +10,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
         android:text="Back"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <!-- PianoView -->
-    <com.example.testing.PianoView
+    <com.example.testing.ViewPiano
         android:id="@+id/pianoView"
         android:layout_width="100dp"
         android:layout_height="0dp"
@@ -25,7 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHeight_percent="0.8" />
 
-    <!-- NoteAnimator -->
+    <!-- NoteVisualizerView -->
     <com.example.testing.NoteAnimator
         android:id="@+id/noteAnimator"
         android:layout_width="0dp"
@@ -35,5 +35,19 @@
         app:layout_constraintStart_toEndOf="@id/pianoView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.8" />
+
+    <TextView
+        android:id="@+id/noteText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="#AAFFFFFF"
+        android:padding="8dp"
+        android:text="Note info"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

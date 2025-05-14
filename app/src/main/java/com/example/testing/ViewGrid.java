@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GridView extends View {
+public class ViewGrid extends View {
 
     private Paint borderPaint;
     private Paint cellPaint;
@@ -26,7 +26,7 @@ public class GridView extends View {
     private int numColumnsOnScreen = 16;
     private static final int EXTRA_COLUMNS = 10; // Додаткові колонки
 
-    public GridView(Context context, AttributeSet attrs) {
+    public ViewGrid(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }

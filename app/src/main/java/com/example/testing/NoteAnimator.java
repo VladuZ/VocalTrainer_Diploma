@@ -6,7 +6,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+
+import androidx.fragment.app.FragmentManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -17,16 +21,22 @@ public class NoteAnimator extends View {
     private List<Note> notes;
     private Handler handler;
     private Runnable runnable;
-
+    private AudioAnalyzer audioAnalyzer;
+    private TextView noteTextView;
+    private FragmentManager fragmentManager;
     public static final int REFRESH_RATE = 16;
-    public static final int NOTE_SPEED = 5;
-
+    public static double NOTE_SPEED = 0;
+    boolean atLeastOneNote = false;
+    boolean exerciseActive = true;
     private static final int NUM_PITCHES = 60; // Updated to 60 pitches (5 octaves * 12 notes)
     private List<Key> pianoKeys = new ArrayList<>();
 
     private int currentPitchIndex = -1;
+    private int nextPitchIndex = -1;
     private int sungPitch = -1;
-
+    private final String[] NOTE_NAMES = {
+            "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
+    };
     private static final int[] NOTE_COLORS = {
             Color.RED, Color.MAGENTA, Color.rgb(255,165,0), Color.rgb(255,105,180),
             Color.YELLOW, Color.GREEN, Color.rgb(0,128,128), Color.BLUE,
@@ -41,7 +51,7 @@ public class NoteAnimator extends View {
     private void init() {
         notes = new ArrayList<>();
         handler = new Handler();
-
+        audioAnalyzer = new AudioAnalyzer(getContext());
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -84,30 +94,48 @@ public class NoteAnimator extends View {
         }
     }
 
-    public void addNote(int pitchIndex, int lengthPx) {
+    public void addNote(int pitchIndex, int lengthPx, int offsetX) {
         if (pianoKeys.isEmpty()) initPianoKeys();
         if (pitchIndex < 0 || pitchIndex >= pianoKeys.size()) return;
 
         Key key = pianoKeys.get(pitchIndex);
         int y = (int) key.y;
         int height = (int) key.height;
-        int width = key.isBlack ? (int) (getWidth() * 0.6f) : getWidth();
 
         int color = NOTE_COLORS[pitchIndex % 12];
-        notes.add(new Note(getWidth(), y, width, height, pitchIndex, color));
+        notes.add(new Note(getWidth() + offsetX, y, lengthPx, height, pitchIndex, color));
+
+        if(!atLeastOneNote)
+            atLeastOneNote = true;
     }
 
     private void updateNotes() {
-        Iterator<Note> iterator = notes.iterator();
-        currentPitchIndex = -1;
+        if(exerciseActive) {
+            Iterator<Note> iterator = notes.iterator();
+            currentPitchIndex = -1;
+            nextPitchIndex = -1;
 
-        while (iterator.hasNext()) {
-            Note note = iterator.next();
-            note.x -= NOTE_SPEED;
-            if (note.x + note.width < 0) {
-                iterator.remove();
-            } else if (currentPitchIndex == -1 && note.x <= getWidth() * 0.9) {
-                currentPitchIndex = note.pitchIndex;
+            while (iterator.hasNext()) {
+                Note note = iterator.next();
+                note.x -= NOTE_SPEED;
+                if (note.x + note.width < 0) {
+                    iterator.remove();
+                } else if (currentPitchIndex == -1 && note.x <= getWidth() * 0.9) {
+                    currentPitchIndex = note.pitchIndex;
+                } else if (nextPitchIndex == -1 && note.x <= getWidth() * 0.9 && note.pitchIndex != currentPitchIndex) {
+                    nextPitchIndex = note.pitchIndex;
+                }
+            }
+            sungPitch = audioAnalyzer.getCurrentPitchIndex();
+            updateNoteText(currentPitchIndex, nextPitchIndex, sungPitch);
+            if (notes.isEmpty() && atLeastOneNote) {
+                // Show the DialogFragment
+                handler.postDelayed(() -> {
+                    DialogFragmentExerciseDone dialogFragment = new DialogFragmentExerciseDone();
+                    dialogFragment.show(fragmentManager, "dialog_tag");
+                }, 500);
+                atLeastOneNote = false;
+                exerciseActive = false;
             }
         }
     }
@@ -116,11 +144,12 @@ public class NoteAnimator extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+
         for (Note note : notes) {
             Paint paint = new Paint();
             paint.setColor(note.color);
             paint.setStyle(Paint.Style.FILL);
-            canvas.drawRect(note.x, note.y, note.x + note.width, note.y + note.height, paint);
+            canvas.drawRect((int)note.x, note.y, (int)note.x + note.width, note.y + note.height, paint);
         }
 
         // Візуалізація співаної ноти
@@ -143,8 +172,48 @@ public class NoteAnimator extends View {
         this.sungPitch = pitchIndex;
     }
 
+    public void setBPM(int bpm, int length){
+        NOTE_SPEED = (double)(REFRESH_RATE * bpm * length) / 15000f;
+    }
+
+    private void updateNoteText(int currentPitch, int nextPitch, int sungPitch) {
+        String currentNote = getNoteName(currentPitch);
+        String nextNote = getNoteName(nextPitch);
+        String sungNote = getNoteName(sungPitch);
+
+        String accuracy = (sungPitch != -1 && sungPitch == currentPitch) ? "Yes" :
+                (sungPitch != -1 && currentPitch != -1) ? "No" : "—";
+
+        String display = "Current: " + currentNote +
+                "\nNext: " + nextNote +
+                "\nYour: " + sungNote +
+                "\nMatch: " + accuracy;
+
+        try {
+            noteTextView.setText(display);
+        }
+        catch (Exception e) {
+            Log.e("Error", e.getMessage());
+        }
+    }
+
+    private String getNoteName(int pitchIndex) {
+        if (pitchIndex == -1) return "—";
+        int octave = (pitchIndex / 12) + 1; // Updated to start from octave 1
+        int note = pitchIndex % 12;
+        return NOTE_NAMES[note] + octave;
+    }
+
+    public void setNoteTextView(TextView noteTextView){
+        this.noteTextView = noteTextView;
+    }
+    public void setFragmentManager(FragmentManager fragmentManager){
+        this.fragmentManager = fragmentManager;
+    }
+
     private static class Note {
-        int x, y, width, height, pitchIndex, color;
+        double x;
+        int y, width, height, pitchIndex, color;
 
         Note(int x, int y, int width, int height, int pitchIndex, int color) {
             this.x = x;
